@@ -26,6 +26,8 @@ OF SUCH DAMAGE.
 */
 /* single nearest neighbor search written by Tamas Nepusz <tamas@cs.rhul.ac.uk> */
 
+#include "kdtree.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -50,7 +52,8 @@ struct kdtree *kd_create(int k)
 {
     struct kdtree *tree;
 
-    if(!(tree = new kdtree)) {
+	tree = new kdtree;
+    if(!(tree)) {
         return 0;
     }
 
@@ -107,10 +110,12 @@ static int insert_rec(struct kdnode **nptr, const double *pos, void *data, int d
     struct kdnode *node;
 
     if(!*nptr) {
-        if(!(node = new kdnode)) {
+		node = new kdnode;
+        if(!(node)) {
             return -1;
         }
-        if(!(node->pos = new double[dim])) {
+		node->pos = new double[dim];
+        if(!(node->pos)) {
             delete[] node;
             return -1;
         }
@@ -299,10 +304,12 @@ struct kdres *kd_nearest(struct kdtree *kd, const double *pos)
     if (!kd->rect) return 0;
 
     /* Allocate result set */
-    if(!(rset = new kdres)) {
+	rset = new kdres;
+    if(!(rset)) {
         return 0;
     }
-    if(!(rset->rlist = new res_node)) {
+	rset->rlist = new res_node;
+    if(!(rset->rlist)) {
         delete rset;
         return 0;
     }
@@ -310,7 +317,8 @@ struct kdres *kd_nearest(struct kdtree *kd, const double *pos)
     rset->tree = kd;
 
     /* Duplicate the bounding hyperrectangle, we will work on the copy */
-    if (!(rect = hyperrect_duplicate(kd->rect))) {
+	rect = hyperrect_duplicate(kd->rect);
+    if (!(rect)) {
         kd_res_free(rset);
         return 0;
     }
@@ -347,10 +355,12 @@ struct kdres *kd_nearest_range(struct kdtree *kd, const double *pos, double rang
     int ret;
     struct kdres *rset;
 
-    if(!(rset = new kdres)) {
+	rset = new kdres;
+    if(!(rset)) {
         return 0;
     }
-    if(!(rset->rlist = new res_node)) {
+	rset->rlist = new res_node;
+    if(!(rset->rlist)) {
         delete rset;
         return 0;
     }
@@ -416,16 +426,19 @@ static struct kdhyperrect* hyperrect_create(int dim, const double *min, const do
     size_t size = dim * sizeof(double);
     struct kdhyperrect* rect = 0;
 
-    if (!(rect = new kdhyperrect)) {
+	rect = new kdhyperrect;
+    if (!(rect)) {
         return 0;
     }
 
     rect->dim = dim;
-    if (!(rect->min = new double[size])) {
+	rect->min = new double[size];
+    if (!(rect->min)) {
         delete rect;
         return 0;
     }
-    if (!(rect->max = new double[size])) {
+	rect->max = new double[size];
+    if (!(rect->max)) {
         delete[] rect->min;
         delete rect;
         return 0;
@@ -484,7 +497,8 @@ static int rlist_insert(struct res_node *list, struct kdnode *item, double dist_
 {
     struct res_node *rnode;
 
-    if(!(rnode = new res_node)) { 
+	rnode = new res_node;
+    if(!(rnode)) {
         return -1;
     }
     rnode->item = item;
